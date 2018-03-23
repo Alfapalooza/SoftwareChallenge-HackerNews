@@ -5,9 +5,9 @@ import challenge.logger.Logger
 
 import com.google.inject.Inject
 
-import akka.event.{Logging, LoggingAdapter}
+import akka.event.{ Logging, LoggingAdapter }
 
-class ApplicationLogger @Inject()(modules: Modules) extends Logger {
+class ApplicationLogger(modules: Modules) extends Logger {
   override protected def logger: LoggingAdapter =
     Logging(modules.akka.actorSystem, getClass)
 }

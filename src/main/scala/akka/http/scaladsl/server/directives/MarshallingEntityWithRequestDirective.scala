@@ -1,21 +1,21 @@
 package akka.http.scaladsl.server.directives
 
 import akka.http.scaladsl.server._
-import akka.http.scaladsl.server.directives.BasicDirectives.{cancelRejections, extractRequestContext, provide}
+import akka.http.scaladsl.server.directives.BasicDirectives.{ cancelRejections, extractRequestContext, provide }
 import akka.http.scaladsl.server.directives.FutureDirectives.onComplete
 import akka.http.scaladsl.server.directives.RouteDirectives.reject
-import akka.http.scaladsl.unmarshalling.{FromRequestUnmarshaller, Unmarshaller}
+import akka.http.scaladsl.unmarshalling.{ FromRequestUnmarshaller, Unmarshaller }
 
-import scala.util.{Failure, Success}
+import scala.util.{ Failure, Success }
 
 trait MarshallingEntityWithRequestDirective {
   def requestWithEntity[T](um: FromRequestUnmarshaller[T]): Directive1[HttpRequestWithEntity[T]] =
     extractRequestContext.flatMap[Tuple1[HttpRequestWithEntity[T]]] { ctx ⇒
-      import ctx.{executionContext, materializer}
+      import ctx.{ executionContext, materializer }
 
       onComplete(um(ctx.request).map(_ -> ctx.request)) flatMap {
         case Success((value, req)) =>
-          provide(HttpRequestWithEntity[T](value, req))
+          provide(new HttpRequestWithEntity[T](value, req))
         case Failure(RejectionError(r)) =>
           reject(r)
         case Failure(Unmarshaller.NoContentException) =>

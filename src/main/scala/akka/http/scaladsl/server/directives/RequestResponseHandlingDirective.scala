@@ -2,12 +2,12 @@ package akka.http.scaladsl.server.directives
 
 import java.util.UUID
 
-import challenge.logger.impl.{ErrorLogger, RequestLogger}
+import challenge.logger.impl.{ ErrorLogger, RequestLogger }
 import challenge.models.exceptions.ServiceResponseException
 
-import akka.http.scaladsl.model.{HttpRequest, IdHeader}
+import akka.http.scaladsl.model.{ HttpRequest, IdHeader }
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.{Directive0, Directive1, ExceptionHandler, Route}
+import akka.http.scaladsl.server.{ Directive0, Directive1, ExceptionHandler, Route }
 
 trait RequestResponseHandlingDirective {
   def requestLogger: RequestLogger
@@ -56,8 +56,8 @@ trait RequestResponseHandlingDirective {
     mapRequest { request =>
       request.copy(
         headers =
-          id +:
-            request.headers
+        id +:
+          request.headers
       )
     }
 

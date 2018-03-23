@@ -1,6 +1,6 @@
 package challenge.models
 
-import play.api.libs.json.{JsObject, Json, Writes}
+import play.api.libs.json.{ JsObject, Json, Writes }
 
 object ServiceResponse {
   implicit val writes: Writes[ServiceResponse[_]] =
@@ -10,12 +10,16 @@ object ServiceResponse {
     new ServiceResponse[T] {
       override implicit val writes: Writes[T] =
         _writes
+
       override val msg: String =
         _msg
+
       override val code: Int =
         _code
+
       override val status: Int =
         _status
+
       override val response: T =
         _response
     }
@@ -37,6 +41,7 @@ trait ServiceResponse[T] {
       "message" -> msg,
       "status" -> status,
       "code" -> code,
-      "response" -> Json.toJson(response))
+      "response" -> Json.toJson(response)
+    )
 }
 

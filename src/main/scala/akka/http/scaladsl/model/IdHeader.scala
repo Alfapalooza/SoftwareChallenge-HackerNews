@@ -1,8 +1,8 @@
 package akka.http.scaladsl.model
 
-import akka.http.scaladsl.model.headers.{ModeledCustomHeader, ModeledCustomHeaderCompanion}
+import akka.http.scaladsl.model.headers.{ ModeledCustomHeader, ModeledCustomHeaderCompanion }
 
-import scala.util.{Success, Try}
+import scala.util.{ Success, Try }
 
 final case class IdHeader(id: String) extends ModeledCustomHeader[IdHeader] {
   override val renderInRequests =

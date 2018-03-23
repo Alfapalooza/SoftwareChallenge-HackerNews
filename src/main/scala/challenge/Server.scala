@@ -2,7 +2,7 @@ package challenge
 
 import challenge.guice.Modules
 import challenge.guice.modules.ModuleBindings
-import challenge.logger.impl.{ErrorLogger, RequestLogger}
+import challenge.logger.impl.{ ErrorLogger, RequestLogger }
 
 import com.google.inject.Guice
 
@@ -11,7 +11,6 @@ import akka.stream.ActorMaterializer
 
 object Server extends App with Routes {
   import net.codingwell.scalaguice.InjectorExtensions._
-
   override lazy val modules: Modules =
     Guice.createInjector(new ModuleBindings()).instance[Modules]
 
@@ -24,5 +23,10 @@ object Server extends App with Routes {
   implicit val materializer: ActorMaterializer =
     modules.akka.actorMaterializer
 
-  Http().bindAndHandle(routes, modules.configuration.interface, modules.configuration.port)
+  Http()
+    .bindAndHandle(
+      routes,
+      modules.configuration.interface,
+      modules.configuration.port
+    )
 }
