@@ -1,3 +1,5 @@
 package challenge.models.responses.hackerNews
 
-case class CommentResponse()
+import challenge.models.hackerNews.User
+
+case class CommentResponse(id: Long, user: User)
