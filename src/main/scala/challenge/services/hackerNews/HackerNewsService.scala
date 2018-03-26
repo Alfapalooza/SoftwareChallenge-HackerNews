@@ -18,7 +18,6 @@ import akka.http.scaladsl.server.directives.HttpRequestWithEntity
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{ Flow, Sink }
 
-import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -60,10 +59,10 @@ class HackerNewsService(modules: Modules) extends BaseHttpService {
     hackerNewsServiceConfiguration.getInt("nested-comments-depth")
 
   private val userTotalCommentCountFlow =
-    Flow[User].map(user => user.id.toLowerCase.trim -> user.storyCommentsCount)
+    Flow[User].map(user => user.id -> user.storyCommentsCount)
 
   private val userStoryCommentCountFlow =
-    Flow[User].map(user => user.id.toLowerCase.trim -> 1)
+    Flow[User].map(user => user.id -> 1)
 
   private def flatten[T]: Flow[Seq[T], T, NotUsed] =
     Flow[Seq[T]].mapConcat[T](_.to[immutable.Iterable])
@@ -73,11 +72,11 @@ class HackerNewsService(modules: Modules) extends BaseHttpService {
 
   private def userSync(subStreams: Int, userToIdFlow: Flow[User, (Id, Int), NotUsed]) =
     Flow[User]
-      .groupBy(subStreams, identity)
+      .groupBy(subStreams, _.id)
       .via(userToIdFlow)
       .reduce {
         (left, right) =>
-          (left._1, left._2 + right._2)
+          (right._1, left._2 + right._2)
       }
       .mergeSubstreams
 
