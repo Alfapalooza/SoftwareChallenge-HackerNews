@@ -37,7 +37,7 @@ trait Routes extends PlayJsonSupport with RequestResponseHandlingDirective with 
                 implicit val request: HttpRequestWithNoEntity =
                   new HttpRequestWithNoEntity(context.request)
 
-                complete(modules.hackerNewsService.getTopStories().map { stories =>
+                complete(modules.hackerNewsService.getTopStoriesWithUsersAndComments().map { stories =>
                   OK -> Json.toJson(stories)
                 })
               }

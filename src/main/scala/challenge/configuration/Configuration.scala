@@ -24,5 +24,5 @@ class Configuration @Inject() () {
     akkaConfiguration.getInt("port")
 
   lazy val timeout: Timeout =
-    Timeout(akkaConfiguration.getInt("timeout") seconds)
+    Timeout(akkaConfiguration.getInt("request-timeout") seconds)
 }

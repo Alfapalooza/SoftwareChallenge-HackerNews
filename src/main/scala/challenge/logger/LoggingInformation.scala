@@ -93,7 +93,7 @@ object LoggingInformation {
   implicit def serviceRequestResponse[T]: LoggingInformation[ServiceRequestResponse[T]] =
     (elem: ServiceRequestResponse[T]) =>
       Json.obj(
-        "service" -> elem.service.nameForLogging,
+        "service" -> elem.service.nameForLoggingString,
         "epoch" -> s"${elem.epoch}ms",
         "request" -> httpRequestWithEntity(elem.originalRequest),
         "serviceRequest" -> httpRequestWithEntity(elem.request),

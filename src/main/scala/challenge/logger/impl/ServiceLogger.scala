@@ -9,6 +9,7 @@ import com.google.inject.Inject
 import akka.event.{ Logging, LoggingAdapter }
 import akka.http.scaladsl.model.{ HttpRequest, HttpResponse }
 import akka.http.scaladsl.server.directives.HttpRequestWithEntity
+import akka.stream.Materializer
 
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -20,10 +21,12 @@ class ServiceLogger(modules: Modules) extends Logger {
     service: NameForLogging,
     serviceRequest: HttpRequestWithEntity[T],
     originalRequest: HttpRequestWithEntity[_]
-  )(fn: HttpRequestWithEntity[T] => Future[HttpResponse])(implicit executionContext: ExecutionContext, loggingInformation: LoggingInformation[ServiceRequestResponse[T]]): Future[HttpResponse] = {
+  )(fn: HttpRequestWithEntity[T] => Future[HttpResponse])(implicit materializer: Materializer, executionContext: ExecutionContext, loggingInformation: LoggingInformation[ServiceRequestResponse[T]]): Future[HttpResponse] = {
     val start: Long = System.currentTimeMillis()
 
     fn(serviceRequest).map { serviceResponse =>
+      serviceRequest.request.discardEntityBytes()
+
       info(
         ServiceRequestResponse(
           service,

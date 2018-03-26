@@ -4,12 +4,13 @@ import java.util.UUID
 
 import challenge.logger.impl.{ ErrorLogger, RequestLogger }
 import challenge.models.exceptions.ServiceResponseException
+import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 
 import akka.http.scaladsl.model.{ HttpRequest, IdHeader }
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.{ Directive0, Directive1, ExceptionHandler, Route }
 
-trait RequestResponseHandlingDirective {
+trait RequestResponseHandlingDirective extends PlayJsonSupport {
   def requestLogger: RequestLogger
 
   def errorLogger: ErrorLogger
@@ -33,14 +34,9 @@ trait RequestResponseHandlingDirective {
     ExceptionHandler {
       case exception: Exception =>
         val serviceResponseException =
-          exception match {
-            case serviceResponseException: ServiceResponseException =>
-              serviceResponseException
-            case ex: Exception =>
-              ServiceResponseException(ex)
-          }
+          ServiceResponseException(exception)
 
-        errorLogger.error(serviceResponseException, req)
+        errorLogger.error(exception, req)
         complete(serviceResponseException.status, serviceResponseException)
     }
 

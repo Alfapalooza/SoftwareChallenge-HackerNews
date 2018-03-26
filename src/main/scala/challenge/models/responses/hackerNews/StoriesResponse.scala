@@ -13,10 +13,13 @@ import scala.concurrent.Future
 case class StoriesResponse(storyIds: Seq[Long])
 
 object StoriesResponse {
-  implicit def writes: Writes[StoriesResponse] =
-    (o: StoriesResponse) => Json.obj("storyIds" -> o.storyIds)
+  implicit val writes: Writes[StoriesResponse] =
+    (o: StoriesResponse) =>
+      Json.obj(
+        "storyIds" -> o.storyIds
+      )
 
-  def apply(httpResponse: HttpResponse, optNumStories: Option[Int] = None)(implicit materializer: Materializer): Future[StoriesResponse] =
+  def applyHttpResponse(httpResponse: HttpResponse, optNumStories: Option[Int] = None)(implicit materializer: Materializer): Future[StoriesResponse] =
     httpResponse
       .toJson
       .map(_.as[Seq[Long]])

@@ -4,25 +4,23 @@ import challenge.models.{ DefaultServiceResponse, ServiceResponse }
 
 import play.api.libs.json.Writes
 
-case class ServiceResponseException(private val _msg: String, private val _code: Int, private val _status: Int) extends Exception(_msg) with DefaultServiceResponse {
-  override val msg: String =
-    _msg
-
-  override val status: Int =
-    _status
-
-  override val code: Int =
-    _code
-}
+class ServiceResponseException(override val msg: String, override val code: Int, override val status: Int) extends DefaultServiceResponse
 
 object ServiceResponseException {
   def apply[T](serviceResponse: ServiceResponse[T])(implicit writes: Writes[T]): ServiceResponseException =
-    ServiceResponseException(serviceResponse.msg, serviceResponse.code, serviceResponse.status)
+    new ServiceResponseException(serviceResponse.msg, serviceResponse.code, serviceResponse.status)
 
-  def apply(throwable: Throwable): ServiceResponseException =
-    E0500.copy(_msg = throwable.getMessage)
+  def apply(throwable: Throwable): ServiceResponseException = {
+    val msg =
+      if (throwable.getMessage == null)
+        "Cannot process exception message."
+      else
+        throwable.getMessage
 
-  object E0400 extends ServiceResponseException("Bad Request", 400, 400)
+    new ServiceResponseException(msg, 500, 500)
+  }
 
-  object E0500 extends ServiceResponseException("Internal Server Error", 500, 500)
+  case object E0400 extends ServiceResponseException("Bad Request", 400, 400)
+
+  case object E0500 extends ServiceResponseException("Internal Server Error", 500, 500)
 }
