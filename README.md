@@ -3,12 +3,12 @@
 ### How to run
 From project directory:
 ```
-    sbt run
+sbt run
 ```
 
 By default the configuration port is set to *8080*, to get the challenge listing, in you browser, navigate to:
 ```
-    localhost:8080/api/hacker-news/top-stories
+localhost:8080/api/hacker-news/top-stories
 ```
 
 The above call will produce a response that adheres to this schema:
